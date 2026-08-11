@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:6.0.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Jakarta Servlet
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    // JSTL
+    compileOnly 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+    // JDBC de PostgreSQL
+    implementation 'org.postgresql:postgresql:42.7.3'
+    // Pool de conexiones
+    implementation 'com.zaxxer:HikariCP:5.1.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Fuerzamos al compilador para que lea nuestros archivos  .java como UTF-8 sin importar la codificacion por defecto del sistema operativo (En mi caso en ingles)
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+war {
+    archiveFileName = 'huellas-vet.war'
+}

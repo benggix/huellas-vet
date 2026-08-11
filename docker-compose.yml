@@ -1,0 +1,65 @@
+# Nuestro archivo docket compose, con esto vamos a levantar PostgreSQL + Payara Server, con auto-deploy del WAR.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: huellas-vet-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-huellas_db}
+      POSTGRES_USER: ${DB_USER:-huellas_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-huellas_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-huellas_user} -d ${DB_NAME:-huellas_db}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  payara:
+    image: payara/server-full:6.2024.6-jdk21
+    container_name: huellas-vet-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+      - "4848:4848"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${DB_NAME:-huellas_db}
+      DB_USER: ${DB_USER:-huellas_user}
+      DB_PASSWORD: ${DB_PASSWORD:-huellas_pass}
+    volumes:
+      - ./build/libs:/opt/payara/deployments
+
+  pgadmin:
+    build:
+      context: .
+      dockerfile: docker/pgadmin/Dockerfile
+      args:
+        PGADMIN_DB_HOST: postgres
+        PGADMIN_DB_PORT: "5432"
+        PGADMIN_DB_NAME: ${DB_NAME:-huellas_db}
+        PGADMIN_DB_USER: ${DB_USER:-huellas_user}
+    container_name: huellas-vet-pgadmin
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@huellas.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  pgdata:
+  pgadmin_data:
