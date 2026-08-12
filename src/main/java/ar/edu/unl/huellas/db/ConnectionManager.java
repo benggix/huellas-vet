@@ -41,7 +41,9 @@ public final class ConnectionManager {
             config.setJdbcUrl("jdbc:postgresql://" + envHost + ":" + port + "/" + name);
             config.setUsername(user);
             config.setPassword(password);
-            config.setMaximumPoolSize(10); // el tamaño del pool de un maximo de 10
+            config.setMaximumPoolSize(5); // lo reduzco para bajar consumo
+            config.setMinimumIdle(1); // para no mantener conexiones de mas abiertas que esta sin uso
+
         } else {
             // Caso contrario, como no tenemos variables de entorno configurado en nuestro sistema, se busca el archivo de configuracion local que tenemos "db.properties"
             Properties props = new Properties();
@@ -66,9 +68,10 @@ public final class ConnectionManager {
             config.setUsername(props.getProperty("db.user"));
             config.setPassword(props.getProperty("db.password"));
 
-            // El tamaño maximo del pool tambien puede definirse en el archivo, pero lo definimos aca con valor por defecto "10"
+            // El tamaño maximo del pool tambien puede definirse en el archivo, pero lo definimos aca con valor por defecto "5"
             config.setMaximumPoolSize(
-                    Integer.parseInt(props.getProperty("db.pool.maxSize", "10")));
+                    Integer.parseInt(props.getProperty("db.pool.maxSize", "5")));
+            config.setMinimumIdle(1);
         }
 
         // Le definimos un nombre identificador del pool que nos sera util para los logs y metricas
