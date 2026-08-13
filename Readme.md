@@ -1,13 +1,13 @@
 # Huellas Vet — Ejecutar con Docker
 
-Bienvenido a mi proyecto Huellas (Veterinaria). Podras ejecutar esta app sin instalar Java, Gradle, Payara ni
+Bienvenido a mi proyecto Huellas (Veterinaria). Podrás ejecutar esta app sin instalar Java, Gradle, Payara ni
 PostgreSQL. Solo necesitás **Docker Desktop** (Windows/Mac) o **Docker Engine + Compose** (para el caso de Linux).
 
 ## 0. Instalar Docker
 
 Instale Docker antes de seguir con el paso 1. Docker Desktop o Docker Engine + Compose (para el caso de Linux)
 
-## 1. Verofocacopm de la instalación de Docker
+## 1. Verificación de la instalación de Docker
 
 Verificá la instalación:
 
@@ -16,7 +16,7 @@ docker --version
 docker compose version
 ```
 
-## 2. Compilacion del proyecto
+## 2. Compilación del proyecto
 
 Generá el archivo `.war`:
 
@@ -64,16 +64,28 @@ Para acceder al servidor huellas_db utilizá la siguiente credencial:
 - **Base de datos:** `huellas_db`
 - **Contraseña:** `huellas_pass`
 
-## 6. Actualizar la aplicación
+## 6. Panel de administración
 
-Si por alguna razon ah modificado el código:
+Desde el panel se pueden ver los turnos reservados, las consultas de contacto y los suscriptores del newsletter que
+cargan los clientes.
+
+```
+http://localhost:8080/huellas-vet/admin/login.jsp
+```
+
+Las credenciales **no están en este documento por seguridad** (la contraseña se guarda hasheada con
+PBKDF2-HMAC-SHA256 + salt en `src/main/resources/admin.properties`, no estan en texto plano).
+
+## 7. Actualizar la aplicación
+
+Si por alguna razón has modificado el código:
 
 ```bash
 ./gradlew clean war
 docker compose restart payara
 ```
 
-## 7. Detener Docker
+## 8. Detener Docker
 
 Para detener la ejecución
 
@@ -117,4 +129,4 @@ Verificá que ningún otro servicio esté utilizando los puertos `5432` o `8080`
 
 `ConnectionManager` detecta automáticamente las variables de entorno (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` y
 `DB_PASSWORD`). Si no existen, utiliza `db.properties`, por lo que el mismo `.war` funciona tanto en Docker como en una
-instalación local.# huellas-vet
+instalación local.
