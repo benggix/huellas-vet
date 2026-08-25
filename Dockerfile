@@ -14,5 +14,5 @@ ENV JVM_ARGS="-Xms128m -Xmx320m -XX:MaxMetaspaceSize=176m -XX:+UseSerialGC -XX:T
 ENV MEM_XSS=256k
 
 COPY --from=build /app/build/libs/huellas-vet.war /opt/payara/deployments/huellas-vet.war
-COPY --chown=payara:payara docker/init_2_reduce_threads.sh /opt/payara/scripts/init_2_reduce_threads.sh
+COPY --chown=payara:payara docker/init_2_reduce_ threads.sh /opt/payara/scripts/init_2_reduce_threads.sh/
 RUN chmod +x /opt/payara/scripts/init_2_reduce_threads.sh

@@ -1,9 +1,11 @@
 # Nuestro archivo docket compose, con esto vamos a levantar PostgreSQL + Payara Server, con auto-deploy del WAR.
 
 services:
+  # Servicio para la base de datos PostGreSQL
   postgres:
     image: postgres:16-alpine
     container_name: huellas-vet-db
+    # Si el contenedor se cae o la pc se reinicia, entonces docker lo levantara automáticamente
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME:-huellas_db}
@@ -14,35 +16,40 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    # Mecanismo de control para asegurar que la base de datos esté lista antes de que otros servicios se conecten
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-huellas_user} -d ${DB_NAME:-huellas_db}" ]
       interval: 5s
       timeout: 5s
       retries: 10
 
+# Servicio para el servidor de aplicaciones payara
   payara:
-    image: payara/server-full:6.2024.6-jdk21
+    build: .
     container_name: huellas-vet-app
     restart: unless-stopped
+    # No arranca hasta que el 'healthcheck' de la base de datos confirme que Postgres está listo para recibir conexiones
     depends_on:
       postgres:
         condition: service_healthy
     ports:
-      - "8080:8080"
-      - "4848:4848"
+      - "8080:8080" # Puerto para acceder a nuestra app web
+      - "4848:4848" # Puerto para acceder a la consola de administración de Payara
     environment:
       DB_HOST: postgres
       DB_PORT: "5432"
       DB_NAME: ${DB_NAME:-huellas_db}
       DB_USER: ${DB_USER:-huellas_user}
       DB_PASSWORD: ${DB_PASSWORD:-huellas_pass}
-    volumes:
-      - ./build/libs:/opt/payara/deployments
+    # El volumen ya no es obligatorio porque mi Dockerfile ya hace el COPY del .war
 
+# Servicio para el dministrador visual de la base de datos PostgreSQL 
   pgadmin:
+    # para que use un Dockerfile personalizado para pre-configurar los servidores automáticamente
     build:
       context: .
       dockerfile: docker/pgadmin/Dockerfile
+      # Pasa estos datos como argumentos durante la construcción para que pgAdmin ya venga conectado a Postgres
       args:
         PGADMIN_DB_HOST: postgres
         PGADMIN_DB_PORT: "5432"
@@ -61,5 +68,5 @@ services:
       - pgadmin_data:/var/lib/pgadmin
 
 volumes:
-  pgdata:
-  pgadmin_data:
+  pgdata: # Para almacenar los archivos físicos de la base de datos
+  pgadmin_data: # Para almacena los datos de usuario de pgAdmin
