@@ -29,7 +29,6 @@
       <ul class="site-nav__list">
         <li><a href="${pageContext.request.contextPath}/index.jsp" class="${currentPage == 'inicio' ? 'is-active' : ''}">Inicio</a></li>
         <li><a href="${pageContext.request.contextPath}/servicios" class="${currentPage == 'servicios' ? 'is-active' : ''}">Servicios</a></li>
-        <li><a href="${pageContext.request.contextPath}/turnos" class="${currentPage == 'turnos' ? 'is-active' : ''}">Turnos</a></li>
         <li><a href="${pageContext.request.contextPath}/blog" class="${currentPage == 'blog' ? 'is-active' : ''}">Blog</a></li>
         <li><a href="${pageContext.request.contextPath}/contacto" class="${currentPage == 'contacto' ? 'is-active' : ''}">Contacto</a></li>
         <li class="site-nav__cta"><a href="${pageContext.request.contextPath}/turnos" class="btn btn--small">Reservar turno</a></li>
