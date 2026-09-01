@@ -49,10 +49,10 @@ public class TurnoDAO {
             throw e;
         }
     }
-    
+
     // Para traer todos los datos del dueño junto a la mascota para el panel de administración. */
     public List<TurnoDetalle> listarTodosConMascota() throws SQLException {
-        String sql = "SELECT t.id, t.servicio, t.fecha, t.hora, t.notas, "
+        String sql = "SELECT t.id, t.servicio, t.fecha, t.hora, t.notas, t.estado, "
                 + "m.nombre AS mascota_nombre, m.especie, m.dueno_nombre, m.dueno_contacto "
                 + "FROM turnos t JOIN mascotas m ON m.id = t.mascota_id "
                 + "ORDER BY t.fecha DESC, t.hora DESC";
@@ -67,6 +67,7 @@ public class TurnoDAO {
                 t.setFecha(rs.getDate("fecha").toLocalDate());
                 t.setHora(rs.getTime("hora").toLocalTime());
                 t.setNotas(rs.getString("notas"));
+                t.setEstado(rs.getString("estado"));
                 t.setMascotaNombre(rs.getString("mascota_nombre"));
                 t.setEspecie(rs.getString("especie"));
                 t.setDuenoNombre(rs.getString("dueno_nombre"));
@@ -75,5 +76,16 @@ public class TurnoDAO {
             }
         }
         return lista;
+    }
+
+    // metodo para actualizar unicamente el estado de un turno
+    public boolean actualizarEstado(int turnoId, String nuevoEstado) throws SQLException {
+        String sql = "UPDATE turnos SET estado = ? WHERE id = ?";
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, turnoId);
+            return ps.executeUpdate() > 0;
+        }
     }
 }

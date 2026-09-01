@@ -7,9 +7,18 @@ public class Servicio {
   private String titulo;
   private String descripcion;
   private String detalle;
+  private String imagenUrl;
   private Integer orden;
 
   public Servicio() {
+  }
+
+  public String getImagenUrl() {
+    return imagenUrl;
+  }
+
+  public void setImagenUrl(String imagenUrl) {
+    this.imagenUrl = imagenUrl;
   }
 
   public Integer getId() {

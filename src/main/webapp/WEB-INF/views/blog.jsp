@@ -30,14 +30,15 @@
       <div class="post-list">
         <c:forEach items="${articulos}" var="a">
           <article class="post-card">
-            <div class="post-card__thumb" aria-hidden="true">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16l-7-4-7 4V4z" stroke="currentColor" stroke-width="1.5"/></svg>
+            <div class="post-card__thumb">
+              <img src="${pageContext.request.contextPath}${not empty a.imagenUrl ? a.imagenUrl : '/resources/img/placeholder.svg'}"
+                   alt="Ilustración de la nota: ${a.titulo}" loading="lazy" width="96" height="96" />
             </div>
             <div>
               <span class="tag">${a.etiqueta}</span>
               <h3>${a.titulo}</h3>
               <p>${a.resumen}</p>
-              <a href="#" class="ficha__link">Leer nota →</a>
+              <a href="${pageContext.request.contextPath}/blog/nota?slug=${a.slug}" class="ficha__link">Leer nota →</a>
             </div>
           </article>
         </c:forEach>

@@ -13,16 +13,25 @@ public class Turno {
   private LocalDate fecha;
   private LocalTime hora;
   private String notas;
+  private String estado;
 
   public Turno() {
   }
-  
+
   public Turno(Integer mascotaId, String servicio, LocalDate fecha, LocalTime hora, String notas) {
     this.mascotaId = mascotaId;
     this.servicio = servicio;
     this.fecha = fecha;
     this.hora = hora;
     this.notas = notas;
+  }
+
+  public String getEstado() {
+    return estado;
+  }
+
+  public void setEstado(String estado) {
+    this.estado = estado;
   }
 
   public Integer getId() {

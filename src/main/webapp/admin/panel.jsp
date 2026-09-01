@@ -20,8 +20,18 @@
       <a href="${pageContext.request.contextPath}/admin/logout" class="btn btn--ghost btn--small">Cerrar sesión</a>
     </div>
 
+    <nav style="display:flex; gap:10px; margin-bottom:1.6em; flex-wrap:wrap;">
+      <a href="${pageContext.request.contextPath}/admin/panel" class="btn btn--small btn--honey">Turnos y consultas</a>
+      <a href="${pageContext.request.contextPath}/admin/blog" class="btn btn--small btn--ghost">Gestionar blog</a>
+      <a href="${pageContext.request.contextPath}/admin/servicios" class="btn btn--small btn--ghost">Gestionar servicios</a>
+    </nav>
+
     <c:if test="${not empty errorCarga}">
       <p class="form-msg is-error">${errorCarga}</p>
+    </c:if>
+
+    <c:if test="${not empty resultadoAdminTurno}">
+      <p class="form-msg ${resultadoAdminTurno.ok ? 'is-ok' : 'is-error'}" role="status">${resultadoAdminTurno.mensaje}</p>
     </c:if>
 
     <!-- turnos -->
@@ -32,6 +42,7 @@
           <tr>
             <th>Fecha</th><th>Hora</th><th>Servicio</th><th>Mascota</th>
             <th>Especie</th><th>Dueño</th><th>Contacto</th><th>Notas</th>
+            <th>Estado</th><th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -45,6 +56,37 @@
               <td>${t.duenoNombre}</td>
               <td>${t.duenoContacto}</td>
               <td>${t.notas}</td>
+              <td>
+                <span class="tag admin-badge admin-badge--${t.estado}">${t.estado}</span>
+              </td>
+              <td>
+                <div class="admin-actions">
+                  <c:if test="${t.estado != 'confirmado'}">
+                    <form action="${pageContext.request.contextPath}/admin/turnos/estado" method="post">
+                      <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}" />
+                      <input type="hidden" name="turnoId" value="${t.id}" />
+                      <input type="hidden" name="estado" value="confirmado" />
+                      <button type="submit" class="btn btn--small btn--ghost">Confirmar</button>
+                    </form>
+                  </c:if>
+                  <c:if test="${t.estado != 'atendido'}">
+                    <form action="${pageContext.request.contextPath}/admin/turnos/estado" method="post">
+                      <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}" />
+                      <input type="hidden" name="turnoId" value="${t.id}" />
+                      <input type="hidden" name="estado" value="atendido" />
+                      <button type="submit" class="btn btn--small btn--ghost">Atendido</button>
+                    </form>
+                  </c:if>
+                  <c:if test="${t.estado != 'cancelado'}">
+                    <form action="${pageContext.request.contextPath}/admin/turnos/estado" method="post">
+                      <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}" />
+                      <input type="hidden" name="turnoId" value="${t.id}" />
+                      <input type="hidden" name="estado" value="cancelado" />
+                      <button type="submit" class="btn btn--small btn--ghost">Cancelar</button>
+                    </form>
+                  </c:if>
+                </div>
+              </td>
             </tr>
           </c:forEach>
         </tbody>
@@ -52,7 +94,7 @@
       <c:if test="${empty turnos}"><p class="admin-empty">Todavía no hay turnos reservados.</p></c:if>
     </div>
 
-    <!-- consultas de contacto ================= -->
+    <!-- consultas de contacto -->
     <h2 style="font-size:1.2rem;">Consultas de contacto (${fn:length(consultas)})</h2>
     <div class="admin-table-wrap">
       <table class="admin-table">

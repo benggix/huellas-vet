@@ -6,9 +6,12 @@ import java.time.LocalDate;
 public class ArticuloBlog {
 
   private Integer id;
+  private String slug;
   private String etiqueta;
   private String titulo;
   private String resumen;
+  private String contenido;
+  private String imagenUrl;
   private LocalDate publicadoEn;
 
   public ArticuloBlog() {
@@ -20,6 +23,30 @@ public class ArticuloBlog {
 
   public void setId(Integer id) {
     this.id = id;
+  }
+
+  public String getSlug() {
+    return slug;
+  }
+
+  public void setSlug(String slug) {
+    this.slug = slug;
+  }
+
+  public String getContenido() {
+    return contenido;
+  }
+
+  public void setContenido(String contenido) {
+    this.contenido = contenido;
+  }
+
+  public String getImagenUrl() {
+    return imagenUrl;
+  }
+
+  public void setImagenUrl(String imagenUrl) {
+    this.imagenUrl = imagenUrl;
   }
 
   public String getEtiqueta() {

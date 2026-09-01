@@ -29,6 +29,10 @@
       <div class="ficha-grid">
         <c:forEach items="${servicios}" var="s" varStatus="st">
           <article class="ficha">
+            <div class="ficha__thumb">
+              <img src="${pageContext.request.contextPath}${not empty s.imagenUrl ? s.imagenUrl : '/resources/img/placeholder.svg'}"
+                   alt="Ícono del servicio: ${s.titulo}" loading="lazy" width="56" height="56" />
+            </div>
             <span class="ficha__code">FICHA · ${st.index + 1}</span>
             <h3>${s.titulo}</h3>
             <p>${s.descripcion}</p>

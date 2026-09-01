@@ -24,7 +24,10 @@ public class CsrfFilter implements Filter {
     private static final String SESSION_ATTR = "csrfToken";
 
     // Rutas que modifican o persisten datos y que, por lo tanto requieren una validacion con el token
-    private static final String[] RUTAS_PROTEGIDAS = {"/turnos", "/contacto", "/suscripcion"};
+    private static final String[] RUTAS_PROTEGIDAS = {
+            "/turnos", "/contacto", "/suscripcion",
+            "/admin/turnos/estado", "/admin/blog", "/admin/servicios"
+    };
 
     /* Metodo para interceptar las peticiones HTTP para poder garantizar la extistencia del token y validar su autencidiad en las operaciones graves.
         -> @throws ServletException: Es para saber si ocurre un error interno en la cadena de filtros.

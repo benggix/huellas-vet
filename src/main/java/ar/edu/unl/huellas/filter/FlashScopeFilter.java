@@ -16,7 +16,8 @@ public class FlashScopeFilter implements Filter {
 
     // Lista de atributos de sesion que van a ser utilizados como mensajes flash. Estos mensajes van a permanecer disponibles hasta la siguiente peticion GET.
     private static final String[] FLASH_KEYS = {
-            "resultadoTurno", "resultadoContacto", "resultadoNewsletter"
+            "resultadoTurno", "resultadoContacto", "resultadoNewsletter",
+            "resultadoAdminTurno", "resultadoAdminBlog", "resultadoAdminServicio"
     };
 
     @Override

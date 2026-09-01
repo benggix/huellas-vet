@@ -435,6 +435,22 @@ p {
     border-width: 0 34px 34px 0;
 }
 
+.ficha__thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-deep);
+    margin-bottom: 0.8em;
+}
+
+.ficha__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 .ficha__code {
     font-family: var(--font-mono);
     font-size: 0.68rem;
@@ -593,6 +609,33 @@ p {
     justify-content: center;
     color: var(--ink-faint);
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.post-card__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Detalle de un articulo del blog */
+.post-hero__img {
+    width: 100%;
+    max-height: 340px;
+    object-fit: cover;
+    border-radius: var(--radius);
+    background: var(--bg-deep);
+    margin-bottom: 1.4em;
+}
+
+.post-body {
+    max-width: 68ch;
+}
+
+.post-body p {
+    margin-bottom: 1.1em;
+    line-height: 1.7;
 }
 
 .post-card h3 {
@@ -898,6 +941,69 @@ p {
     padding: 20px;
     color: var(--ink-faint);
     font-size: 0.9rem;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.admin-actions form {
+    display: inline-block;
+    margin: 0;
+}
+
+.admin-badge {
+    text-transform: capitalize;
+}
+
+.admin-badge--pendiente {
+    background: var(--bg-deep);
+    color: var(--honey-dark);
+}
+
+.admin-badge--confirmado {
+    background: rgba(47, 107, 79, 0.15);
+    color: var(--ok);
+}
+
+.admin-badge--atendido {
+    background: rgba(31, 59, 50, 0.12);
+    color: var(--ink);
+}
+
+.admin-badge--cancelado {
+    background: rgba(179, 64, 47, 0.15);
+    color: var(--danger);
+}
+
+.admin-form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 2.5em;
+}
+
+.admin-form-card h2 {
+    font-size: 1.15rem;
+    margin-top: 0;
+}
+
+.admin-list-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-deep);
+}
+
+.admin-list-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 /* Responsive */

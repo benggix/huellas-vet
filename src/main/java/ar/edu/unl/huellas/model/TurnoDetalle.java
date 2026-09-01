@@ -14,6 +14,15 @@ public class TurnoDetalle {
   private LocalDate fecha;
   private LocalTime hora;
   private String notas;
+  private String estado;
+
+  public String getEstado() {
+    return estado;
+  }
+
+  public void setEstado(String estado) {
+    this.estado = estado;
+  }
 
   public Integer getId() {
     return id;
