@@ -31,7 +31,7 @@
         <p class="form-msg ${resultadoTurno.ok ? 'is-ok' : 'is-error'}" role="status">${resultadoTurno.mensaje}</p>
       </c:if>
 
-      <form id="turnosForm" class="form-card form-card--ledger" action="${pageContext.request.contextPath}/turnos" method="post" novalidate>
+      <form id="turnosForm" class="form-card form-card--ledger" action="${pageContext.request.contextPath}/turnos" method="post" accept-charset="UTF-8" novalidate>
         <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}" />
 
         <div class="field-row">

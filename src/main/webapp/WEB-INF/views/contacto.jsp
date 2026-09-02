@@ -32,7 +32,7 @@
           <p class="form-msg ${resultadoContacto.ok ? 'is-ok' : 'is-error'}" role="status">${resultadoContacto.mensaje}</p>
         </c:if>
 
-        <form id="contactoForm" class="form-card" action="${pageContext.request.contextPath}/contacto" method="post" novalidate>
+        <form id="contactoForm" class="form-card" action="${pageContext.request.contextPath}/contacto" method="post" accept-charset="UTF-8" novalidate>
           <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}" />
 
           <div class="field">

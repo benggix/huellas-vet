@@ -41,7 +41,7 @@
           <c:otherwise>Editar servicio #${servicioEditar.id}</c:otherwise>
         </c:choose>
       </h2>
-      <form action="${pageContext.request.contextPath}/admin/servicios" method="post" novalidate>
+      <form action="${pageContext.request.contextPath}/admin/servicios" method="post" accept-charset="UTF-8" novalidate>
         <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}" />
         <input type="hidden" name="accion" value="guardar" />
         <c:if test="${not empty servicioEditar}">
@@ -115,7 +115,7 @@
               <td>
                 <div class="admin-actions">
                   <a href="${pageContext.request.contextPath}/admin/servicios?id=${s.id}" class="btn btn--small btn--ghost">Editar</a>
-                  <form action="${pageContext.request.contextPath}/admin/servicios" method="post"
+                  <form action="${pageContext.request.contextPath}/admin/servicios" method="post" accept-charset="UTF-8"
                         onsubmit="return confirm('¿Eliminar el servicio &quot;${s.titulo}&quot;? Esta acción no se puede deshacer.');">
                     <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}" />
                     <input type="hidden" name="accion" value="eliminar" />

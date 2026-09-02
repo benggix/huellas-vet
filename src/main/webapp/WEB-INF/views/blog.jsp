@@ -65,7 +65,7 @@
         <div class="sidebar-card" style="margin-top:20px;">
           <h3>Suscribite</h3>
           <p style="font-size:0.9rem;">Recibí un resumen mensual con las notas nuevas del blog.</p>
-          <form class="newsletter-inline-form" action="${pageContext.request.contextPath}/suscripcion" method="post" novalidate>
+          <form class="newsletter-inline-form" action="${pageContext.request.contextPath}/suscripcion" method="post" accept-charset="UTF-8" novalidate>
             <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}" />
             <label for="blogEmail" class="sr-only">Correo electrónico</label>
             <input type="email" id="blogEmail" name="email" placeholder="tu@correo.com" required

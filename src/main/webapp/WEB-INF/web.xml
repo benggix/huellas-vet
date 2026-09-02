@@ -7,6 +7,19 @@
 
     <display-name>Huellas - Clinica Veterinaria</display-name>
 
+    <!--
+    Filtro de codificacion de caracteres. Se declara aca en vez de con @WebFilter a proposito para que los filtros declarados en web.xml se ejecutan antes
+    que los filtros registrados solo con anotaciones (como CsrfFilter y FlashScopeFilter).
+    -->
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>ar.edu.unl.huellas.filter.CharacterEncodingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- No agregamos los servlet TurnoServlet, ContactoServlet, NewsletterServlet porque el filtro CSRF y el listener de ciclo de vida se registran vía anotaciones "@WebServlet, @WebFilter, @WebListener" directamente en las clases Java, por eso no aparecen mapeados por aca -->
 
     <welcome-file-list>

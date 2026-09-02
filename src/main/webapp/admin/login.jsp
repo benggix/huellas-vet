@@ -19,7 +19,7 @@
         <p class="form-msg is-error" role="alert">${error}</p>
       </c:if>
 
-      <form class="form-card" action="${pageContext.request.contextPath}/admin/login" method="post" novalidate>
+      <form class="form-card" action="${pageContext.request.contextPath}/admin/login" method="post" accept-charset="UTF-8" novalidate>
         <div class="field">
           <label for="usuario">Usuario</label>
           <input type="text" id="usuario" name="usuario" required autocomplete="username" autofocus />
