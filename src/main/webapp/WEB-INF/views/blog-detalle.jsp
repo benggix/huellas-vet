@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <% String currentPage = "blog"; %>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,11 +31,9 @@
            alt="Ilustración de la nota: ${articulo.titulo}" />
 
       <article class="post-body">
-        <%-- El contenido se guarda como texto plano con parrafos separados por saltos de linea dobles, asi que los partimos aca para renderizar cada <p> --%>
-        <c:forEach items="${fn:split(articulo.contenido, '\n\n')}" var="parrafo">
-          <c:if test="${not empty fn:trim(parrafo)}">
-            <p>${parrafo}</p>
-          </c:if>
+        <%-- "parrafos" ya viene separado en una List<String> desde el servlet (ver BlogDetalleServlet) --%>
+        <c:forEach items="${parrafos}" var="parrafo">
+          <p>${parrafo}</p>
         </c:forEach>
       </article>
 

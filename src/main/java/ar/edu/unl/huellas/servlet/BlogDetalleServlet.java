@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 // Controlador para la pagina de detalle de un articulo del blog.
@@ -36,7 +38,13 @@ public class BlogDetalleServlet extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/blog");
         return;
       }
-      req.setAttribute("articulo", articulo.get());
+      ArticuloBlog a = articulo.get();
+      req.setAttribute("articulo", a);
+      List<String> parrafos = Arrays.stream(a.getContenido().split("\\n\\s*\\n"))
+              .map(String::trim)
+              .filter(p -> !p.isEmpty())
+              .toList();
+      req.setAttribute("parrafos", parrafos);
     } catch (SQLException e) {
       log("Error obteniendo el detalle del articulo de blog", e);
       resp.sendRedirect(req.getContextPath() + "/blog");
