@@ -71,8 +71,8 @@
 
         <div class="field-row">
           <div class="field">
-            <label for="imagenUrl">Imagen <span class="hint">(ruta dentro de /resources/img o URL; opcional)</span></label>
-            <input type="text" id="imagenUrl" name="imagenUrl" value="${servicioEditar.imagenUrl}" placeholder="/resources/img/servicios/mi-icono.svg" />
+            <label for="imagenUrl">URL</label>
+            <input type="text" id="imagenUrl" name="imagenUrl" value="${servicioEditar.imagenUrl}" placeholder="https://ejemplo.com/imagen.jpg" />
           </div>
           <div class="field">
             <label for="orden">Orden</label>

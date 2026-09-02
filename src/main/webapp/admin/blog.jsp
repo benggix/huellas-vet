@@ -76,8 +76,8 @@
         </div>
 
         <div class="field">
-          <label for="imagenUrl">Imagen <span class="hint">(ruta dentro de /resources/img o URL completa; opcional)</span></label>
-          <input type="text" id="imagenUrl" name="imagenUrl" value="${articuloEditar.imagenUrl}" placeholder="/resources/img/blog/mi-imagen.svg" />
+          <label for="imagenUrl">URL</label>
+          <input type="text" id="imagenUrl" name="imagenUrl" value="${articuloEditar.imagenUrl}" placeholder="https://ejemplo.com/imagen.jpg" />
         </div>
 
         <div style="display:flex; gap:10px; margin-top:1em;">
