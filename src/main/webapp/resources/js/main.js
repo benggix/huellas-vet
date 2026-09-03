@@ -40,7 +40,7 @@ function initNavToggle() {
     });
 }
 
-// El popup de bienvenida, indicando un promocion del mes. Sera solo valido una vez por sesion de navegador
+// El popup de bienvenida, indicando un promocion del mes. Se guarda en localStorage (compartido entre pestañas) para que no se repita al abrir el sitio en una pestaña nueva
 function initWelcomePopup() {
     var popup = document.getElementById('welcomePopup');
     if (!popup) return;
@@ -50,7 +50,7 @@ function initWelcomePopup() {
 
     var yaVista = false;
     try {
-        yaVista = sessionStorage.getItem(STORAGE_KEY) === '1';
+        yaVista = localStorage.getItem(STORAGE_KEY) === '1';
     } catch (e) {
         yaVista = false;
     }
@@ -66,7 +66,7 @@ function initWelcomePopup() {
     function cerrar() {
         popup.hidden = true;
         try {
-            sessionStorage.setItem(STORAGE_KEY, '1');
+            localStorage.setItem(STORAGE_KEY, '1');
         } catch (e) { /* noop */
         }
     }
@@ -82,7 +82,7 @@ function initWelcomePopup() {
     if (ctaLink) {
         ctaLink.addEventListener('click', function () {
             try {
-                sessionStorage.setItem(STORAGE_KEY, '1');
+                localStorage.setItem(STORAGE_KEY, '1');
             } catch (e) { /* noop */
             }
         });
