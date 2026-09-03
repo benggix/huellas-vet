@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initNewsletterForms();
 });
 
-// Año dinamico en el footer
+// Año dinamico en el footer.
 function initYear() {
     document.querySelectorAll('#year').forEach(function (el) {
         el.textContent = new Date().getFullYear();
@@ -40,7 +40,7 @@ function initNavToggle() {
     });
 }
 
-// El popup de bienvenida, indicando un promocion del mes. Se guarda en localStorage (compartido entre pestañas) para que no se repita al abrir el sitio en una pestaña nueva
+// El popup de bienvenida, indicando un promocion del mes. Se guarda en localStorage (compartido entre pestañas) para que no se repita al abrir el sitio en una pestaña nueva.
 function initWelcomePopup() {
     var popup = document.getElementById('welcomePopup');
     if (!popup) return;
