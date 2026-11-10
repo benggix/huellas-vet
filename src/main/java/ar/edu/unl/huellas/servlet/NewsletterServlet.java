@@ -58,10 +58,15 @@ public class NewsletterServlet extends HttpServlet {
     // Por ultimo, realizamos la redirección contextual e Inteligente (el patron PRG). Es decir, intentamos volver a la pagina exacta desde donde se envió el formulario leyendo la cabecera "Referer". Tambien por seguridad, se valida estrictamente que la cabecera contenga el context path de la propia aplicacion para evitar redirecciones engañosas hacia sitios web externos que pueden ser maliciosos
     String referer = req.getHeader("Referer");
     String destino = req.getContextPath() + "/index.jsp";
-    if (referer != null && referer.contains(req.getContextPath())) {
-      destino = referer;
+    if (referer != null) {
+      try {
+        java.net.URI uri = java.net.URI.create(referer);
+        // Solo se acepta el Referer si es del mismo host. Se redirige solo a la ruta, nunca a otro sitio
+        if (req.getServerName().equalsIgnoreCase(uri.getHost()) && uri.getRawPath() != null) {
+          destino = uri.getRawPath() + (uri.getRawQuery() != null ? "?" + uri.getRawQuery() : "");
+        }
+      } catch (IllegalArgumentException ignored) {}
     }
-
     resp.sendRedirect(destino);
   }
 }

@@ -27,12 +27,12 @@ services:
       retries: 10
 
   # Servicio para el servidor de aplicaciones Payara
-  payara:
+  app:
     build: .
     container_name: huellas-vet-app
     restart: unless-stopped
-    # Limite de memoria del contenedor. Si se muere por OOM, hay que ajustar la JVM (JVM_ARGS en el Dockerfile) o subir el limite
-    mem_limit: 512m
+    # Limite de memoria del contenedor.
+    mem_limit: 384m
     # No arranca hasta que el 'healthcheck' de la base de datos confirme que Postgres esta listo para recibir conexiones
     depends_on:
       postgres:
