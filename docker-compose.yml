@@ -1,40 +1,44 @@
-# Nuestro archivo docket compose, con esto vamos a levantar PostgreSQL + Payara Server, con auto-deploy del WAR.
+# Nuestro archivo docker compose, con esto vamos a levantar PostgreSQL + Payara Server, con auto-deploy del WAR.
+# Produccion -> docker compose up -d --build
+# Desarrollo -> docker compose --profile dev up -d --build
 
 services:
-  # Servicio para la base de datos PostGreSQL
+  # Servicio para la base de datos PostgreSQL
   postgres:
     image: postgres:16-alpine
     container_name: huellas-vet-db
-    # Si el contenedor se cae o la pc se reinicia, entonces docker lo levantara automáticamente
+    # Si el contenedor se cae o la pc se reinicia, entonces docker lo levantara automaticamente
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME:-huellas_db}
       POSTGRES_USER: ${DB_USER:-huellas_user}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-huellas_pass}
     ports:
-      - "5432:5432"
+      # Solo accesible desde la propia maquina (no desde internet). La app se conecta por la red interna de Docker (DB_HOST: postgres)
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
-    # Mecanismo de control para asegurar que la base de datos esté lista antes de que otros servicios se conecten
+    # Mecanismo de control para asegurar que la base de datos este lista antes de que otros servicios se conecten
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-huellas_user} -d ${DB_NAME:-huellas_db}" ]
       interval: 5s
       timeout: 5s
       retries: 10
 
-# Servicio para el servidor de aplicaciones payara
+  # Servicio para el servidor de aplicaciones Payara
   payara:
     build: .
     container_name: huellas-vet-app
     restart: unless-stopped
-    # No arranca hasta que el 'healthcheck' de la base de datos confirme que Postgres está listo para recibir conexiones
+    # Limite de memoria del contenedor. Si se muere por OOM, hay que ajustar la JVM (JVM_ARGS en el Dockerfile) o subir el limite
+    mem_limit: 512m
+    # No arranca hasta que el 'healthcheck' de la base de datos confirme que Postgres esta listo para recibir conexiones
     depends_on:
       postgres:
         condition: service_healthy
     ports:
-      - "8080:8080" # Puerto para acceder a nuestra app web
-      - "4848:4848" # Puerto para acceder a la consola de administración de Payara
+      - "8080:8080"            # Puerto para acceder a nuestra app web
     environment:
       DB_HOST: postgres
       DB_PORT: "5432"
@@ -43,13 +47,15 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-huellas_pass}
     # El volumen ya no es obligatorio porque mi Dockerfile ya hace el COPY del .war
 
-# Servicio para el dministrador visual de la base de datos PostgreSQL 
+  # Servicio para el administrador visual de la base de datos PostgreSQL (SOLO DESARROLLO)
   pgadmin:
-    # para que use un Dockerfile personalizado para pre-configurar los servidores automáticamente
+    # Con este perfil, pgAdmin NO se levanta con "docker compose up". Hay que pedirlo con: --profile dev
+    profiles: [ "dev" ]
+    # para que use un Dockerfile personalizado para pre-configurar los servidores automaticamente
     build:
       context: .
       dockerfile: docker/pgadmin/Dockerfile
-      # Pasa estos datos como argumentos durante la construcción para que pgAdmin ya venga conectado a Postgres
+      # Pasa estos datos como argumentos durante la construccion para que pgAdmin ya venga conectado a Postgres
       args:
         PGADMIN_DB_HOST: postgres
         PGADMIN_DB_PORT: "5432"
@@ -60,7 +66,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "5050:80"
+      - "127.0.0.1:5050:80"    # Solo accesible desde la propia maquina
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@huellas.com
       PGADMIN_DEFAULT_PASSWORD: admin
@@ -68,5 +74,5 @@ services:
       - pgadmin_data:/var/lib/pgadmin
 
 volumes:
-  pgdata: # Para almacenar los archivos físicos de la base de datos
-  pgadmin_data: # Para almacena los datos de usuario de pgAdmin
+  pgdata: # Para almacenar los archivos fisicos de la base de datos
+  pgadmin_data: # Para almacenar los datos de usuario de pgAdmin
