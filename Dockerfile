@@ -10,7 +10,7 @@ RUN ./gradlew clean war --no-daemon
 
 FROM payara/server-web:6.2024.6-jdk21
 
-ENV JVM_ARGS="-Xms128m -Xmx320m -XX:MaxMetaspaceSize=176m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
+ENV JVM_ARGS="-Xms96m -Xmx224m -XX:MaxMetaspaceSize=128m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
 ENV MEM_XSS=256k
 
 COPY --from=build /app/build/libs/huellas-vet.war /opt/payara/deployments/huellas-vet.war
