@@ -42,3 +42,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+# IDE
+.idea/
+
+# Credenciales (se versionan solo los .example)
+src/main/resources/db.properties
+src/main/resources/admin.properties

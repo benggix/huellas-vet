@@ -41,7 +41,7 @@ public final class ConnectionManager {
       config.setJdbcUrl("jdbc:postgresql://" + envHost + ":" + port + "/" + name);
       config.setUsername(user);
       config.setPassword(password);
-      config.setMaximumPoolSize(5); // lo reduzco para bajar consumo
+      config.setMaximumPoolSize(2); // lo reduzco para bajar consumo
       config.setMinimumIdle(1); // para no mantener conexiones de mas abiertas que esta sin uso
 
     } else {
