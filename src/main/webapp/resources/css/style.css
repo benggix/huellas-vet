@@ -553,6 +553,15 @@ p {
     color: var(--ink);
 }
 
+.field textarea {
+    resize: vertical;
+    max-width: 100%;
+}
+
+#notas {
+    resize: none;
+}
+
 .field input:focus, .field select:focus, .field textarea:focus {
     border-color: var(--honey-dark);
 }
@@ -1076,7 +1085,7 @@ p {
         grid-template-columns: 72px 1fr;
     }
 
-    /* En pantallas chicas la ficha ocupa todo el ancho, pero le dejamos un pequeño borde a los lados para que no quede pegada al borde */
+    /* En pantallas chicas la ficha ocupa todo el ancho, pero  le dejamos un pequeño borde a los lados para que no quede pegada al borde */
     .ledger-card {
         transform: rotate(-2deg);
     }
