@@ -1,106 +1,42 @@
 package ar.edu.unl.huellas.db;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
-// clase que maneja la conexion en general (No heredable)
+// clase que maneja la conexion en general (No heredable). Ahora la configuracion se arma en DbConfig
 public final class ConnectionManager {
 
-  /* Atributo donde manejaremos el pool de conexiones unico (Singleton). Al ser volatile nos aseguramos que todos los hilos vean
-  el valor actualizado inmediatamente después de ser inicializado */
-  private static volatile HikariDataSource dataSource;
+  // Referencia al pool una vez creado. Solo la usa shutdown() para saber si el pool llego a crearse, sin forzar su creacion. Es volatile para que el hilo que cierra la app vea el valor escrito por el hilo que inicializo el pool
+  private static volatile HikariDataSource created;
 
-  // Este constructor privado es para evitar que se puedan crear instancias de esta clase, porque estamos aplicando el patron singleton  en una clase de utilidad estatica.
+  // Usamos la implementacion Holder (initialization-on-demand holder) para que la JVM no cargue esta clase interna hasta que alguien acceda a INSTANCE por primera vez, ademas garantiza que la inicializacion estatica se ejecute una sola vez y de forma segura entre hilos. Por eso no hace falta synchronized ni volatile en el acceso
+  private static final class Holder {
+    private static final HikariDataSource INSTANCE = createPool();
+  }
+
+  // Constructor privado es para evitar que se puedan crear instancias de esta clase, porque es una clase de utilidad estatica.
   private ConnectionManager() {
   }
 
-  // Metodo que se va a encargar de configurar y crear el pool de conexiones con HikariCP
-  private static HikariDataSource init() {
-    // obtengo la variable de entorno DB_HOST de mi archivo .env (donde tengo mis variables de entorno)
-    String envHost = System.getenv("DB_HOST");
-    HikariConfig config = new HikariConfig();
-
-    // Seteamos para que se utilice el driver JDBC de PostgreSQL
-    config.setDriverClassName("org.postgresql.Driver");
-
-    // Si tenemos configurado variables de entorno en nuestro sistema (existe = no es null) y ademas no esta vacia. Se utilizan dichos datos
-    if (envHost != null && !envHost.isBlank()) {
-      // Se obtienen el resto de los parámetros, usando valores por defecto si no están definidos
-      String port = System.getenv().getOrDefault("DB_PORT", "5432");
-      String name = System.getenv().getOrDefault("DB_NAME", "huellas_db");
-      String user = System.getenv().getOrDefault("DB_USER", "postgres");
-      String password = System.getenv().getOrDefault("DB_PASSWORD", "");
-
-      // Se construye la URL de conexión JDBC dinamicamente
-      config.setJdbcUrl("jdbc:postgresql://" + envHost + ":" + port + "/" + name);
-      config.setUsername(user);
-      config.setPassword(password);
-      config.setMaximumPoolSize(5); // lo reduzco para bajar consumo
-      config.setMinimumIdle(1); // para no mantener conexiones de mas abiertas que esta sin uso
-
-    } else {
-      // Caso contrario, como no tenemos variables de entorno configurado en nuestro sistema, se busca el archivo de configuracion local que tenemos "db.properties"
-      Properties props = new Properties();
-
-      // intentamos abrir el archivo db.properties desde el classpath (src/main/resources)
-      try (InputStream in = ConnectionManager.class.getResourceAsStream("/db.properties")) {
-        if (in == null) {
-          // Si no se encuentra el archivo ni las variables de entorno, lanzamos un error.
-          throw new IllegalStateException(
-                  "No se encontró db.properties en el classpath (src/main/resources) "
-                          + "ni variables de entorno DB_HOST/DB_PORT/DB_NAME/DB_USER/DB_PASSWORD.");
-        }
-        // Si se encontro las variables de entorno, se cargan las propiedades del archivo
-        props.load(in);
-      } catch (IOException e) {
-        // Si no se encontro el archivo, se lanza un error de lectura del archivo
-        throw new IllegalStateException("Error leyendo db.properties", e);
-      }
-
-      // configuramos los datos de conexion a partir del archivo .properties
-      config.setJdbcUrl(props.getProperty("db.url"));
-      config.setUsername(props.getProperty("db.user"));
-      config.setPassword(props.getProperty("db.password"));
-
-      // El tamaño maximo del pool tambien puede definirse en el archivo, pero lo definimos aca con valor por defecto "5"
-      config.setMaximumPoolSize(
-              Integer.parseInt(props.getProperty("db.pool.maxSize", "5")));
-      config.setMinimumIdle(1);
-    }
-
-    // Le definimos un nombre identificador del pool que nos sera util para los logs y metricas
-    config.setPoolName("huellas-pool");
-
-    // Se crea y retorna el DataSource de Hikari con toda la configuración aplicada
-    return new HikariDataSource(config);
+  // Metodo factory privado para crear el pool de conexiones con HikariCP a partir de la configuracion de DbConfig y se guarda la referencia para poder cerrarlo despues
+  private static HikariDataSource createPool() {
+    HikariDataSource ds = new HikariDataSource(DbConfig.load());
+    created = ds;
+    return ds;
   }
 
-  // Metodo publico para obtener una conexión desde el pool
+  // Metodo de acceso publico para obtener una conexión desde el pool (el pool se crea en el primer uso)
   public static Connection getConnection() throws SQLException {
-    // Primera verificacion (sin bloqueo) para evitar sincronizar innecesariamente
-    if (dataSource == null) {
-      // Bloqueo por clase para evitar que dos hilos inicialicen el pool al mismo tiempo
-      synchronized (ConnectionManager.class) {
-        // Segunda verificacion dentro del bloque sincronizado (patron "double-checked locking")
-        if (dataSource == null) {
-          dataSource = init();
-        }
-      }
-    }
-    // Se obtiene una conexión disponible del pool
-    return dataSource.getConnection();
+    return Holder.INSTANCE.getConnection();
   }
 
-  // Metodo para cerrar el pool de conexiones de forma ordenada
+  // Metodo de limpieza para cerrar el pool de conexiones de forma ordenada. Si el pool nunca se creo, no hace nada (no lo crea solo para cerrarlo)
   public static void shutdown() {
-    if (dataSource != null) {
-      dataSource.close();
+    HikariDataSource ds = created;
+    if (ds != null) {
+      ds.close();
     }
   }
 }
