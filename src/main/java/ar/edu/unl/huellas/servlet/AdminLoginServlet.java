@@ -38,6 +38,7 @@ public class AdminLoginServlet extends HttpServlet {
 
     if (AdminAuth.credencialesValidas(usuario, password)) {
       HttpSession session = req.getSession(true);
+      req.changeSessionId();
       session.setAttribute("isAdmin", Boolean.TRUE);
       resp.sendRedirect(req.getContextPath() + "/admin/panel");
     } else {
