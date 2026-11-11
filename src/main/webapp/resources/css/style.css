@@ -293,7 +293,26 @@ p {
     box-shadow: var(--shadow);
     padding: 28px;
     position: relative;
-    transform: rotate(-1.5deg);
+    z-index: 1;
+    /* Inclinacion intencional: a -1.5deg se leia como un error de alineacion */
+    transform: rotate(-3deg);
+}
+
+/* Hoja apoyada detras de la ficha: refuerza que la inclinacion es deliberada */
+.hero__aside {
+    position: relative;
+}
+
+.hero__aside::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 20px -14px rgba(31, 59, 50, 0.3);
+    transform: rotate(2.5deg) translate(6px, 4px);
 }
 
 .ledger-card::before {
@@ -1055,6 +1074,15 @@ p {
 
     .post-card {
         grid-template-columns: 72px 1fr;
+    }
+
+    /* En pantallas chicas la ficha ocupa todo el ancho, pero le dejamos un pequeño borde a los lados para que no quede pegada al borde */
+    .ledger-card {
+        transform: rotate(-2deg);
+    }
+
+    .hero__aside::before {
+        transform: rotate(1.5deg) translate(4px, 3px);
     }
 }
 
